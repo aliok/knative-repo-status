@@ -1,0 +1,44 @@
+{
+  "repository": "knative-extensions/net-gateway-api",
+  "fetchedAt": "2026-04-06T22:32:00.807Z",
+  "stars": 47,
+  "forks": 38,
+  "watchers": 47,
+  "openIssues": 17,
+  "subscribers": 11,
+  "networkCount": 38,
+  "traffic": {
+    "views": {
+      "count": 756,
+      "uniques": 97,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 409,
+          "uniques": 45
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 347,
+          "uniques": 62
+        }
+      ]
+    },
+    "clones": {
+      "count": 768,
+      "uniques": 225,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 166,
+          "uniques": 63
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 602,
+          "uniques": 171
+        }
+      ]
+    }
+  }
+}

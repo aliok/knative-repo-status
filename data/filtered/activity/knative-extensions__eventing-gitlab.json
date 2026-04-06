@@ -1,7 +1,7 @@
 {
   "repository": "knative-extensions/eventing-gitlab",
-  "fetchedAt": "2026-04-06T21:38:07.693Z",
-  "filteredAt": "2026-04-06T21:42:34.479Z",
+  "fetchedAt": "2026-04-06T21:57:42.884Z",
+  "filteredAt": "2026-04-06T22:32:19.376Z",
   "commits": [
     {
       "sha": "5a40aba9e54581263de929c5227b3e63b2f76d7c",

@@ -1,0 +1,44 @@
+{
+  "repository": "knative-extensions/kn-plugin-quickstart",
+  "fetchedAt": "2026-04-06T22:31:57.854Z",
+  "stars": 27,
+  "forks": 45,
+  "watchers": 27,
+  "openIssues": 4,
+  "subscribers": 6,
+  "networkCount": 45,
+  "traffic": {
+    "views": {
+      "count": 65,
+      "uniques": 33,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 39,
+          "uniques": 16
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 26,
+          "uniques": 19
+        }
+      ]
+    },
+    "clones": {
+      "count": 284,
+      "uniques": 117,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 146,
+          "uniques": 59
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 138,
+          "uniques": 59
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "repository": "knative/test-infra",
+  "fetchedAt": "2026-04-06T22:32:10.848Z",
+  "stars": 82,
+  "forks": 161,
+  "watchers": 82,
+  "openIssues": 23,
+  "subscribers": 20,
+  "networkCount": 161,
+  "traffic": {
+    "views": {
+      "count": 135,
+      "uniques": 76,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 26,
+          "uniques": 8
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 109,
+          "uniques": 70
+        }
+      ]
+    },
+    "clones": {
+      "count": 740,
+      "uniques": 377,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 331,
+          "uniques": 145
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 409,
+          "uniques": 264
+        }
+      ]
+    }
+  }
+}

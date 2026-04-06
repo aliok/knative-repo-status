@@ -1,0 +1,44 @@
+{
+  "repository": "knative-extensions/reconciler-test",
+  "fetchedAt": "2026-04-06T22:32:02.097Z",
+  "stars": 31,
+  "forks": 40,
+  "watchers": 31,
+  "openIssues": 3,
+  "subscribers": 8,
+  "networkCount": 40,
+  "traffic": {
+    "views": {
+      "count": 48,
+      "uniques": 48,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 3,
+          "uniques": 3
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 45,
+          "uniques": 45
+        }
+      ]
+    },
+    "clones": {
+      "count": 1978,
+      "uniques": 870,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 824,
+          "uniques": 397
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 1154,
+          "uniques": 527
+        }
+      ]
+    }
+  }
+}

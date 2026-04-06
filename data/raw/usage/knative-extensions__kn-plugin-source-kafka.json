@@ -1,0 +1,44 @@
+{
+  "repository": "knative-extensions/kn-plugin-source-kafka",
+  "fetchedAt": "2026-04-06T22:31:58.927Z",
+  "stars": 3,
+  "forks": 20,
+  "watchers": 3,
+  "openIssues": 1,
+  "subscribers": 11,
+  "networkCount": 20,
+  "traffic": {
+    "views": {
+      "count": 33,
+      "uniques": 19,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 17,
+          "uniques": 3
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 16,
+          "uniques": 16
+        }
+      ]
+    },
+    "clones": {
+      "count": 241,
+      "uniques": 85,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 119,
+          "uniques": 40
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 122,
+          "uniques": 49
+        }
+      ]
+    }
+  }
+}

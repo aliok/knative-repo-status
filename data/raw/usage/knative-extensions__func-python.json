@@ -1,0 +1,44 @@
+{
+  "repository": "knative-extensions/func-python",
+  "fetchedAt": "2026-04-06T22:31:55.412Z",
+  "stars": 1,
+  "forks": 4,
+  "watchers": 1,
+  "openIssues": 0,
+  "subscribers": 5,
+  "networkCount": 4,
+  "traffic": {
+    "views": {
+      "count": 86,
+      "uniques": 69,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 0,
+          "uniques": 0
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 86,
+          "uniques": 69
+        }
+      ]
+    },
+    "clones": {
+      "count": 101,
+      "uniques": 20,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 47,
+          "uniques": 7
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 54,
+          "uniques": 14
+        }
+      ]
+    }
+  }
+}

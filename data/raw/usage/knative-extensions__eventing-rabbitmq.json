@@ -1,0 +1,44 @@
+{
+  "repository": "knative-extensions/eventing-rabbitmq",
+  "fetchedAt": "2026-04-06T22:31:54.061Z",
+  "stars": 99,
+  "forks": 71,
+  "watchers": 99,
+  "openIssues": 5,
+  "subscribers": 9,
+  "networkCount": 71,
+  "traffic": {
+    "views": {
+      "count": 156,
+      "uniques": 59,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 96,
+          "uniques": 23
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 60,
+          "uniques": 36
+        }
+      ]
+    },
+    "clones": {
+      "count": 644,
+      "uniques": 198,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 278,
+          "uniques": 86
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 366,
+          "uniques": 121
+        }
+      ]
+    }
+  }
+}

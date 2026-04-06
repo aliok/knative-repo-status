@@ -1,0 +1,44 @@
+{
+  "repository": "knative/networking",
+  "fetchedAt": "2026-04-06T22:32:08.503Z",
+  "stars": 71,
+  "forks": 81,
+  "watchers": 71,
+  "openIssues": 2,
+  "subscribers": 12,
+  "networkCount": 81,
+  "traffic": {
+    "views": {
+      "count": 292,
+      "uniques": 151,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 25,
+          "uniques": 15
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 267,
+          "uniques": 139
+        }
+      ]
+    },
+    "clones": {
+      "count": 4429,
+      "uniques": 1582,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 2184,
+          "uniques": 750
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 2245,
+          "uniques": 972
+        }
+      ]
+    }
+  }
+}

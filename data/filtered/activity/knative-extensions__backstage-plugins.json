@@ -1,7 +1,7 @@
 {
   "repository": "knative-extensions/backstage-plugins",
-  "fetchedAt": "2026-04-06T21:34:58.577Z",
-  "filteredAt": "2026-04-06T21:42:34.356Z",
+  "fetchedAt": "2026-04-06T21:54:28.371Z",
+  "filteredAt": "2026-04-06T22:32:19.262Z",
   "commits": [
     {
       "sha": "635ff7da73c20b1bd5d962f531abc73767ab7022",

@@ -1,0 +1,44 @@
+{
+  "repository": "knative-extensions/eventing-redis",
+  "fetchedAt": "2026-04-06T22:31:54.653Z",
+  "stars": 18,
+  "forks": 32,
+  "watchers": 18,
+  "openIssues": 3,
+  "subscribers": 9,
+  "networkCount": 32,
+  "traffic": {
+    "views": {
+      "count": 129,
+      "uniques": 84,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 25,
+          "uniques": 4
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 104,
+          "uniques": 80
+        }
+      ]
+    },
+    "clones": {
+      "count": 602,
+      "uniques": 310,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 327,
+          "uniques": 180
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 275,
+          "uniques": 134
+        }
+      ]
+    }
+  }
+}

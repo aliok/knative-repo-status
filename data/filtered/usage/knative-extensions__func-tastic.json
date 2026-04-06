@@ -1,0 +1,44 @@
+{
+  "repository": "knative-extensions/func-tastic",
+  "fetchedAt": "2026-04-06T22:31:55.781Z",
+  "stars": 5,
+  "forks": 11,
+  "watchers": 5,
+  "openIssues": 1,
+  "subscribers": 7,
+  "networkCount": 11,
+  "traffic": {
+    "views": {
+      "count": 20,
+      "uniques": 7,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 9,
+          "uniques": 2
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 11,
+          "uniques": 5
+        }
+      ]
+    },
+    "clones": {
+      "count": 131,
+      "uniques": 26,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 58,
+          "uniques": 9
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 73,
+          "uniques": 18
+        }
+      ]
+    }
+  }
+}

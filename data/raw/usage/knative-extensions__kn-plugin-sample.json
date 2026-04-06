@@ -1,0 +1,44 @@
+{
+  "repository": "knative-extensions/kn-plugin-sample",
+  "fetchedAt": "2026-04-06T22:31:58.202Z",
+  "stars": 0,
+  "forks": 12,
+  "watchers": 0,
+  "openIssues": 2,
+  "subscribers": 7,
+  "networkCount": 12,
+  "traffic": {
+    "views": {
+      "count": 0,
+      "uniques": 0,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 0,
+          "uniques": 0
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 0,
+          "uniques": 0
+        }
+      ]
+    },
+    "clones": {
+      "count": 169,
+      "uniques": 67,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 84,
+          "uniques": 32
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 85,
+          "uniques": 36
+        }
+      ]
+    }
+  }
+}

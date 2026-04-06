@@ -1,0 +1,44 @@
+{
+  "repository": "knative/community",
+  "fetchedAt": "2026-04-06T22:32:05.931Z",
+  "stars": 290,
+  "forks": 252,
+  "watchers": 290,
+  "openIssues": 49,
+  "subscribers": 28,
+  "networkCount": 252,
+  "traffic": {
+    "views": {
+      "count": 614,
+      "uniques": 329,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 192,
+          "uniques": 106
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 422,
+          "uniques": 235
+        }
+      ]
+    },
+    "clones": {
+      "count": 1267,
+      "uniques": 90,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 615,
+          "uniques": 37
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 652,
+          "uniques": 59
+        }
+      ]
+    }
+  }
+}

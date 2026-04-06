@@ -1,7 +1,7 @@
 {
   "repository": "knative-extensions/eventing-istio",
-  "fetchedAt": "2026-04-06T21:40:29.816Z",
-  "filteredAt": "2026-04-06T21:42:34.538Z",
+  "fetchedAt": "2026-04-06T22:00:10.083Z",
+  "filteredAt": "2026-04-06T22:32:19.433Z",
   "commits": [
     {
       "sha": "6246b8d945343fdcf8dec14e33c38254446871b0",

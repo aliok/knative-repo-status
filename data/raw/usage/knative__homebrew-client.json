@@ -1,0 +1,44 @@
+{
+  "repository": "knative/homebrew-client",
+  "fetchedAt": "2026-04-06T22:32:07.725Z",
+  "stars": 10,
+  "forks": 23,
+  "watchers": 10,
+  "openIssues": 2,
+  "subscribers": 9,
+  "networkCount": 23,
+  "traffic": {
+    "views": {
+      "count": 11,
+      "uniques": 9,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 4,
+          "uniques": 2
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 7,
+          "uniques": 7
+        }
+      ]
+    },
+    "clones": {
+      "count": 182,
+      "uniques": 84,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 90,
+          "uniques": 39
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 92,
+          "uniques": 49
+        }
+      ]
+    }
+  }
+}

@@ -1,7 +1,7 @@
 {
   "repository": "knative-extensions/eventing-autoscaler-keda",
-  "fetchedAt": "2026-04-06T21:36:13.167Z",
-  "filteredAt": "2026-04-06T21:42:34.409Z",
+  "fetchedAt": "2026-04-06T21:55:42.504Z",
+  "filteredAt": "2026-04-06T22:32:19.315Z",
   "commits": [
     {
       "sha": "08bbc822d0c35d7d123e2a19b276d28cc52e97ff",

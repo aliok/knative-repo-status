@@ -1,0 +1,44 @@
+{
+  "repository": "knative/release",
+  "fetchedAt": "2026-04-06T22:32:09.641Z",
+  "stars": 9,
+  "forks": 40,
+  "watchers": 9,
+  "openIssues": 0,
+  "subscribers": 12,
+  "networkCount": 40,
+  "traffic": {
+    "views": {
+      "count": 52,
+      "uniques": 51,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 8,
+          "uniques": 7
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 44,
+          "uniques": 44
+        }
+      ]
+    },
+    "clones": {
+      "count": 125,
+      "uniques": 22,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 61,
+          "uniques": 12
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 64,
+          "uniques": 13
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "repository": "knative/operator",
+  "fetchedAt": "2026-04-06T22:32:08.883Z",
+  "stars": 218,
+  "forks": 116,
+  "watchers": 218,
+  "openIssues": 5,
+  "subscribers": 16,
+  "networkCount": 116,
+  "traffic": {
+    "views": {
+      "count": 868,
+      "uniques": 309,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 339,
+          "uniques": 77
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 529,
+          "uniques": 250
+        }
+      ]
+    },
+    "clones": {
+      "count": 2835,
+      "uniques": 374,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 1219,
+          "uniques": 165
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 1616,
+          "uniques": 233
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "repository": "knative-extensions/security-guard",
+  "fetchedAt": "2026-04-06T22:32:03.312Z",
+  "stars": 67,
+  "forks": 13,
+  "watchers": 67,
+  "openIssues": 0,
+  "subscribers": 5,
+  "networkCount": 13,
+  "traffic": {
+    "views": {
+      "count": 75,
+      "uniques": 16,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 4,
+          "uniques": 4
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 71,
+          "uniques": 12
+        }
+      ]
+    },
+    "clones": {
+      "count": 334,
+      "uniques": 135,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 142,
+          "uniques": 62
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 192,
+          "uniques": 76
+        }
+      ]
+    }
+  }
+}

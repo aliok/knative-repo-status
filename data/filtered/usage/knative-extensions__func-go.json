@@ -1,0 +1,44 @@
+{
+  "repository": "knative-extensions/func-go",
+  "fetchedAt": "2026-04-06T22:31:55.065Z",
+  "stars": 7,
+  "forks": 9,
+  "watchers": 7,
+  "openIssues": 1,
+  "subscribers": 7,
+  "networkCount": 9,
+  "traffic": {
+    "views": {
+      "count": 63,
+      "uniques": 37,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 0,
+          "uniques": 0
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 63,
+          "uniques": 37
+        }
+      ]
+    },
+    "clones": {
+      "count": 140,
+      "uniques": 20,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 70,
+          "uniques": 11
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 70,
+          "uniques": 10
+        }
+      ]
+    }
+  }
+}
