@@ -1,0 +1,9 @@
+{
+  "repository": "knative-extensions/backstage-plugins",
+  "fetchedAt": "2026-04-06T13:45:49.733Z",
+  "dependencies": [],
+  "dependents": [],
+  "crossReferences": {
+    "mentionedIn": []
+  }
+}

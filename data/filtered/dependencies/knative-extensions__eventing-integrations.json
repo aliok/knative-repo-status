@@ -1,0 +1,9 @@
+{
+  "repository": "knative-extensions/eventing-integrations",
+  "fetchedAt": "2026-04-06T13:45:53.345Z",
+  "dependencies": [],
+  "dependents": [],
+  "crossReferences": {
+    "mentionedIn": []
+  }
+}

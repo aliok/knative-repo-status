@@ -1,0 +1,9 @@
+{
+  "repository": "knative-extensions/eventing-istio",
+  "fetchedAt": "2026-04-06T13:45:53.845Z",
+  "dependencies": [],
+  "dependents": [],
+  "crossReferences": {
+    "mentionedIn": []
+  }
+}

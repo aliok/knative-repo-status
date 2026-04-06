@@ -1,0 +1,44 @@
+{
+  "repository": "knative-extensions/eventing-github",
+  "fetchedAt": "2026-04-06T21:42:30.706Z",
+  "stars": 21,
+  "forks": 38,
+  "watchers": 21,
+  "openIssues": 3,
+  "subscribers": 10,
+  "networkCount": 38,
+  "traffic": {
+    "views": {
+      "count": 72,
+      "uniques": 69,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 4,
+          "uniques": 2
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 68,
+          "uniques": 68
+        }
+      ]
+    },
+    "clones": {
+      "count": 346,
+      "uniques": 129,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 157,
+          "uniques": 60
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 189,
+          "uniques": 70
+        }
+      ]
+    }
+  }
+}

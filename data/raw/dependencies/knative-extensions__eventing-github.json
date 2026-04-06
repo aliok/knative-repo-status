@@ -1,0 +1,9 @@
+{
+  "repository": "knative-extensions/eventing-github",
+  "fetchedAt": "2026-04-06T13:45:52.340Z",
+  "dependencies": [],
+  "dependents": [],
+  "crossReferences": {
+    "mentionedIn": []
+  }
+}

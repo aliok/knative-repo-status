@@ -1,0 +1,44 @@
+{
+  "repository": "knative-extensions/backstage-plugins",
+  "fetchedAt": "2026-04-06T21:42:28.869Z",
+  "stars": 5,
+  "forks": 22,
+  "watchers": 5,
+  "openIssues": 0,
+  "subscribers": 4,
+  "networkCount": 22,
+  "traffic": {
+    "views": {
+      "count": 84,
+      "uniques": 66,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 16,
+          "uniques": 7
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 68,
+          "uniques": 60
+        }
+      ]
+    },
+    "clones": {
+      "count": 394,
+      "uniques": 157,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 172,
+          "uniques": 61
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 222,
+          "uniques": 100
+        }
+      ]
+    }
+  }
+}

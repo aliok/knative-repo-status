@@ -1,0 +1,9 @@
+{
+  "repository": "knative-extensions/autoscaler-keda",
+  "fetchedAt": "2026-04-06T15:09:19.502Z",
+  "dependencies": [],
+  "dependents": [],
+  "crossReferences": {
+    "mentionedIn": []
+  }
+}

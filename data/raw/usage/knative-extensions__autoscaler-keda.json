@@ -1,0 +1,44 @@
+{
+  "repository": "knative-extensions/autoscaler-keda",
+  "fetchedAt": "2026-04-06T21:42:28.514Z",
+  "stars": 4,
+  "forks": 9,
+  "watchers": 4,
+  "openIssues": 3,
+  "subscribers": 4,
+  "networkCount": 9,
+  "traffic": {
+    "views": {
+      "count": 14,
+      "uniques": 14,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 5,
+          "uniques": 5
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 9,
+          "uniques": 9
+        }
+      ]
+    },
+    "clones": {
+      "count": 417,
+      "uniques": 146,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 135,
+          "uniques": 54
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 282,
+          "uniques": 95
+        }
+      ]
+    }
+  }
+}

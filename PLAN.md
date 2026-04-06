@@ -1,409 +1,450 @@
-# Knative Repository Health Analyzer - Implementation Plan
+# Knative Repository Data Collection - Implementation Plan
 
 ## Context
 
-The Knative project maintains repositories across two GitHub organizations (`knative` and `knative-extensions`). There's a concern that some repositories may be obsolete and should be deprecated - they're being maintained but not actively used by the community.
+The Knative project maintains repositories across two GitHub organizations (`knative` and `knative-extensions`). There's a concern that some repositories may be obsolete and should be deprecated - they're being maintained but not actually used by the community.
 
-This tool will analyze comprehensive health metrics across all repositories to identify potentially obsolete ones, helping maintainers make data-driven decisions about which repositories to continue investing in versus deprecating.
+This toolset will collect comprehensive data about all repositories, exporting the raw metrics to CSV format for manual analysis and decision-making.
 
 ## Approach
 
-Build a TypeScript/Node.js CLI application using Octokit (GitHub's official API client) that:
-1. Fetches all repositories from both organizations
-2. Collects comprehensive health metrics (activity, usage, dependencies)
-3. Calculates multi-dimensional health scores
-4. Identifies potentially obsolete repositories
-5. Generates reports in multiple formats (console, JSON, CSV, HTML)
+Build a set of TypeScript scripts that run incrementally, where each step:
+1. Reads input from files created in previous steps
+2. Fetches data from GitHub API using Octokit
+3. Saves results to JSON files for the next step
+4. Final step combines all data into a CSV export
 
-The design uses a modular architecture with collectors (data fetching), analyzers (health scoring), and reporters (output generation), with built-in caching and rate limit handling for efficient GitHub API usage.
+This incremental approach allows running steps independently, resuming from failures, and inspecting intermediate results.
 
 ## Project Structure
 
 ```
 knative-repo-status/
 ├── src/
-│   ├── index.ts                      # Main orchestrator
-│   ├── config/
-│   │   ├── constants.ts              # Thresholds, API endpoints
-│   │   └── github.ts                 # Octokit client with plugins
-│   ├── types/
-│   │   ├── repository.ts             # Repository data models
-│   │   ├── metrics.ts                # Health metrics interfaces
-│   │   └── report.ts                 # Report types
-│   ├── collectors/
-│   │   ├── base-collector.ts         # Abstract base with caching
-│   │   ├── repository-collector.ts   # Fetch repos from orgs
-│   │   ├── activity-collector.ts     # Commits, issues, PRs
-│   │   ├── usage-collector.ts        # Stars, forks, traffic
-│   │   └── dependency-collector.ts   # Cross-repo dependencies
-│   ├── analyzers/
-│   │   ├── health-scorer.ts          # Calculate health scores
-│   │   └── obsolescence-detector.ts  # Identify obsolete repos
-│   ├── reporters/
-│   │   ├── console-reporter.ts       # Colored terminal output
-│   │   ├── json-reporter.ts          # JSON export
-│   │   ├── csv-reporter.ts           # CSV for spreadsheets
-│   │   └── html-reporter.ts          # Interactive dashboard
-│   └── utils/
-│       ├── cache.ts                  # File-based caching
-│       ├── rate-limiter.ts           # Rate limit handling
-│       └── logger.ts                 # Structured logging
+│   ├── 1-fetch-repos.ts              # Step 1: Fetch repo list
+│   ├── 2-fetch-activity.ts           # Step 2: Fetch activity metrics (per repo)
+│   ├── 3-fetch-usage.ts              # Step 3: Fetch usage metrics (per repo)
+│   ├── 4-fetch-dependencies.ts       # Step 4: Fetch dependency info (per repo)
+│   ├── 5-filter-bots.ts              # Step 5: Filter bot activity from all data
+│   ├── 6-export-csv.ts               # Step 6: Combine and export to CSV
+│   ├── lib/
+│   │   ├── github-client.ts          # Octokit initialization
+│   │   ├── types.ts                  # TypeScript interfaces
+│   │   └── utils.ts                  # Shared utilities
+├── data/
+│   ├── repos.json                    # Output from step 1 (sorted alphabetically)
+│   ├── raw/                          # Raw data per repo (as-is from API)
+│   │   ├── activity/
+│   │   │   ├── knative__repo1.json
+│   │   │   └── knative__repo2.json
+│   │   ├── usage/
+│   │   │   ├── knative__repo1.json
+│   │   │   └── knative__repo2.json
+│   │   └── dependencies/
+│   │       ├── knative__repo1.json
+│   │       └── knative__repo2.json
+│   ├── filtered/                     # Filtered data (bots removed)
+│   │   ├── activity/
+│   │   ├── usage/
+│   │   └── dependencies/
+│   └── output.csv                    # Final CSV export
+├── config/
+│   └── bots.json                     # List of bot usernames to filter out
 ├── package.json
 ├── tsconfig.json
-└── .env.example
+└── .env
 ```
 
-## Core Data Models
+## Data Collection Steps
 
-### Repository Metrics (`src/types/metrics.ts`)
+### Step 1: Repository List (data/repos.json)
 
-```typescript
-interface RepositoryMetrics {
-  repository: Repository;
-  activityMetrics: ActivityMetrics;
-  usageMetrics: UsageMetrics;
-  dependencyMetrics: DependencyMetrics;
-  healthScore: HealthScore;
-  lastAnalyzed: Date;
-}
+Makes 2 API calls (one per organization) to list all repositories.
 
-interface ActivityMetrics {
-  lastCommit: { date: Date; author: string; sha: string } | null;
-  commits: {
-    last30Days: number;
-    last90Days: number;
-    last180Days: number;
-    last365Days: number;
-  };
-  issues: {
-    open: number;
-    closed: number;
-    recentlyOpened30Days: number;
-    recentlyClosed30Days: number;
-    avgTimeToClose: number;
-  };
-  pullRequests: {
-    open: number;
-    merged: number;
-    recentlyMerged30Days: number;
-    avgTimeToMerge: number;
-  };
-  contributors: {
-    total: number;
-    active30Days: number;
-    active90Days: number;
-  };
-  releases: {
-    latestRelease: { name: string; publishedAt: Date } | null;
-    daysSinceLastRelease: number | null;
-  };
-}
+Saves repositories sorted alphabetically by full name (org/repo).
 
-interface UsageMetrics {
-  stars: number;
-  forks: number;
-  watchers: number;
-  traffic: {
-    views: { count: number; uniques: number } | null;
-    clones: { count: number; uniques: number } | null;
-  } | null; // Requires push access
-}
+Saves basic repository information from the list endpoint:
+- Repository name
+- Full name (org/repo)
+- Organization
+- Description
+- URL
+- Created date
+- Last updated date
+- Last pushed date
+- Is archived
+- Is fork
+- Default branch
 
-interface DependencyMetrics {
-  dependents: string[];      // Repos that depend on this one
-  dependencies: string[];    // Repos this depends on
-  crossReferences: {
-    mentionedIn: string[];   // Repos mentioning this in issues/PRs
-  };
-}
+Note: This step uses only the organization list repositories endpoint - no individual repo API calls.
 
-interface HealthScore {
-  overall: number;           // 0-100
-  breakdown: {
-    activity: number;        // 0-100
-    usage: number;          // 0-100
-    maintenance: number;    // 0-100
-    community: number;      // 0-100
-  };
-  status: 'healthy' | 'moderate' | 'at-risk' | 'obsolete';
-  flags: string[];          // Warning messages
-}
-```
+**Ordering**: Repositories are sorted alphabetically by full name for deterministic processing in later steps.
 
-## Health Score Calculation
+### Step 2: Activity Metrics (data/raw/activity/)
 
-### Weighted Components (src/analyzers/health-scorer.ts)
+For each repository (processed in alphabetical order), collects raw activity data from 2026 only (since: 2026-01-01).
 
-**Activity Score (30% weight):**
-- Last commit within 30 days: 30 pts
-- Last commit 31-90 days: 20 pts
-- Last commit 91-180 days: 10 pts
-- Last commit 181-365 days: 5 pts
-- Older than 365 days: 0 pts
-- Bonus: +10 for >5 commits in last 30 days
-- Bonus: +10 for >3 active contributors in last 90 days
+Saves one JSON file per repository: `data/raw/activity/{org}__{repo}.json`
 
-**Usage Score (25% weight):**
-- Stars: log10(stars + 1) × 10 (max 30 pts)
-- Forks: log10(forks + 1) × 10 (max 20 pts)
-- Recent issues/PRs: +10 for activity in last 30 days
+Data collected (saved as-is from API, no filtering):
+- **Commits** (2026 only): Full commit objects from API
+- **Issues** (created/updated in 2026): Full issue objects including all comments
+- **Pull Requests** (created/updated in 2026): Full PR objects including all comments and reviews
+- **Contributors** (2026 activity): List of all contributors
+- **Releases** (2026 only): Full release objects
 
-**Maintenance Score (30% weight):**
-- Release within 90 days: 30 pts
-- Release within 180 days: 20 pts
-- Release within 365 days: 10 pts
-- PR avg merge time <7 days: +20 pts
-- Issue avg close time <14 days: +10 pts
+**Resumability**: Before fetching data for a repo, checks if `data/raw/activity/{org}__{repo}.json` exists. If it does, skips that repo.
 
-**Community Score (15% weight):**
-- Active contributors (>5): +20 pts
-- Growing contributor base: +10 pts
-- Healthy issue close rate (>50%): +10 pts
+**Limiting**: Respects `MAX_REPOS` environment variable - if set to 5, processes only first 5 repos alphabetically.
 
-### Obsolescence Detection Criteria
+**No filtering**: Saves complete API responses including bot activity. Filtering happens in Step 5.
 
-A repository is flagged as **potentially obsolete** if ANY of:
-- Overall health score < 20
-- Last commit > 180 days ago AND zero activity in last 90 days
-- Archived status = true
-- No releases in 365+ days AND no commits in 180+ days
-- Zero stars AND zero forks AND no recent activity
+### Step 3: Usage Metrics (data/raw/usage/)
 
-**Status Classification:**
-- Healthy: 70-100
-- Moderate: 40-69
-- At-Risk: 20-39
-- Obsolete: <20
+For each repository (processed in alphabetical order), collects raw usage data.
 
-## API Integration Strategy
+Saves one JSON file per repository: `data/raw/usage/{org}__{repo}.json`
 
-### Octokit Configuration (`src/config/github.ts`)
+Data collected (saved as-is from API):
+- Stars count
+- Forks count
+- Watchers count
+- Open issues count
+- Subscribers count
+- Network count
+- Traffic data (views, clones) - if available with proper permissions
 
-```typescript
-import { Octokit } from '@octokit/rest';
-import { throttling } from '@octokit/plugin-throttling';
-import { retry } from '@octokit/plugin-retry';
+**Resumability**: Before fetching data for a repo, checks if `data/raw/usage/{org}__{repo}.json` exists. If it does, skips that repo.
 
-const MyOctokit = Octokit.plugin(throttling, retry);
+**Limiting**: Respects `MAX_REPOS` environment variable - if set to 5, processes only first 5 repos alphabetically.
 
-export function createOctokit(token: string): Octokit {
-  return new MyOctokit({
-    auth: token,
-    throttle: {
-      onRateLimit: (retryAfter, options) => true,  // Auto-retry
-      onSecondaryRateLimit: (retryAfter, options) => true,
-    },
-    retry: {
-      doNotRetry: [400, 401, 403, 404, 422],
-    },
-  });
-}
-```
+### Step 4: Dependency Metrics (data/raw/dependencies/)
 
-### Collector Pattern (`src/collectors/base-collector.ts`)
+For each repository (processed in alphabetical order), collects raw dependency data.
 
-All collectors extend a base class providing:
-- Caching with configurable TTL
-- Error handling and logging
-- Rate limit awareness
+Saves one JSON file per repository: `data/raw/dependencies/{org}__{repo}.json`
 
-```typescript
-abstract class BaseCollector {
-  constructor(
-    protected octokit: Octokit,
-    protected cache: Cache,
-    protected logger: Logger
-  ) {}
+Data collected (saved as-is):
+- List of Knative repos this depends on (from go.mod, package.json, etc.)
+- List of Knative repos that depend on this one
+- Cross-references in issues/PRs from other Knative repos
 
-  protected async fetchWithCache<T>(
-    key: string,
-    fetcher: () => Promise<T>,
-    ttl: number = 3600
-  ): Promise<T> {
-    const cached = await this.cache.get<T>(key);
-    if (cached) return cached;
+**Resumability**: Before fetching data for a repo, checks if `data/raw/dependencies/{org}__{repo}.json` exists. If it does, skips that repo.
 
-    const data = await fetcher();
-    await this.cache.set(key, data, ttl);
-    return data;
-  }
+**Limiting**: Respects `MAX_REPOS` environment variable - if set to 5, processes only first 5 repos alphabetically.
 
-  abstract collect(repo: Repository): Promise<any>;
-}
-```
+### Step 5: Bot Filtering (data/filtered/)
 
-### Caching Strategy (`src/utils/cache.ts`)
+Reads all raw data files and filters out bot activity based on `config/bots.json`.
 
-File-based JSON cache with TTL:
-- Repository list: 1 hour
-- Activity metrics: 30 minutes
-- Usage metrics: 1 hour
-- Dependency analysis: 12 hours
-- Traffic data: 24 hours
+For each repository, creates filtered versions:
+- `data/filtered/activity/{org}__{repo}.json` - Activity data with bot commits, issues, PRs, comments, reviews removed
+- `data/filtered/usage/{org}__{repo}.json` - Usage data (copied as-is, no filtering needed)
+- `data/filtered/dependencies/{org}__{repo}.json` - Dependencies (copied as-is, no filtering needed)
 
-Cache key format: `repos:${org}`, `repo:${fullName}:${metricType}`
+**Bot filtering logic**:
+- Removes commits where author is in bots list
+- Removes issues created by bots
+- Removes PRs created by bots
+- Removes issue/PR comments by bots
+- Removes PR reviews by bots
+- Recalculates counts and identifies latest human activity
 
-## Output Formats
+**Resumability**: Before processing a repo, checks if all three filtered files exist. If they do, skips that repo.
 
-### Console Reporter
-Colored terminal output with summary tables:
-```
-Knative Repository Health Analysis
-Generated: 2026-04-06 10:30:00
+**Limiting**: Respects `MAX_REPOS` environment variable.
 
-Summary:
-  Total: 87 | Healthy: 45 (52%) | At-Risk: 10 (11%) | Obsolete: 4 (5%)
+### Step 6: CSV Export (data/output.csv)
 
-Potentially Obsolete Repositories:
-┌─────────────────────┬───────┬──────────┬──────────────┬──────────────┐
-│ Repository          │ Score │ Status   │ Last Commit  │ Last Release │
-├─────────────────────┼───────┼──────────┼──────────────┼──────────────┤
-│ knative/old-project │   15  │ Obsolete │ 456 days ago │ Never        │
-└─────────────────────┴───────┴──────────┴──────────────┴──────────────┘
-```
+Reads all filtered data files and combines into a single CSV file with columns:
+- Repository name
+- Organization
+- Description
+- URL
+- Created date
+- Last pushed date
+- Is archived
+- Stars
+- Forks
+- Watchers
+- Open issues
+- Commits in 2026 by humans (30d, 90d, since Jan 1)
+- Last commit date (by human)
+- Last commit author (human)
+- Contributors in 2026 (human, total, 30d active, 90d active)
+- Latest release date
+- Days since last release
+- PRs in 2026 by humans (open, closed, merged)
+- Issues in 2026 by humans (open, closed)
+- Latest issue comment date (by human)
+- Latest issue comment author (by human)
+- Latest PR comment date (by human)
+- Latest PR comment author (by human)
+- Latest PR review date (by human)
+- Latest PR review author (by human)
+- Dependent repos count
+- Traffic views (if available)
+- Traffic clones (if available)
 
-### JSON Reporter
-Full metrics export for programmatic use
+**Data source**: Reads from `data/filtered/` directory which has bot activity already removed.
 
-### CSV Reporter
-Spreadsheet-friendly format for analysis in Excel/Google Sheets
+**Limiting**: Respects `MAX_REPOS` environment variable - only includes repos that were processed.
 
-### HTML Reporter
-Interactive dashboard with sortable tables and charts
+## Execution Flow
 
-## CLI Interface
+### Running the Scripts
+
+Each script is run independently using ts-node:
 
 ```bash
-# Basic usage
-npx knative-repo-status
+# Step 1: Fetch repository list (sorted alphabetically)
+npx ts-node src/1-fetch-repos.ts
 
-# Specific organizations
-npx knative-repo-status --org knative --org knative-extensions
+# Step 2: Fetch activity metrics (processes repos in alphabetical order)
+MAX_REPOS=5 npx ts-node src/2-fetch-activity.ts
 
-# Multiple output formats
-npx knative-repo-status --format json,csv,html
+# Step 3: Fetch usage metrics (processes repos in alphabetical order)
+MAX_REPOS=5 npx ts-node src/3-fetch-usage.ts
 
-# Filter by status
-npx knative-repo-status --filter obsolete,at-risk
+# Step 4: Fetch dependencies (processes repos in alphabetical order)
+MAX_REPOS=5 npx ts-node src/4-fetch-dependencies.ts
 
-# Skip cache for fresh data
-npx knative-repo-status --no-cache
+# Step 5: Filter bot activity from raw data
+MAX_REPOS=5 npx ts-node src/5-filter-bots.ts
 
-# Verbose logging
-npx knative-repo-status --verbose
+# Step 6: Export to CSV
+MAX_REPOS=5 npx ts-node src/6-export-csv.ts
 ```
+
+### Data Flow Between Steps
+
+Each step reads from and writes to the data/ directory:
+- Step 1 → Creates `data/repos.json` (sorted alphabetically)
+- Steps 2-4 → Read `data/repos.json`, create per-repo JSON files in `data/raw/{activity,usage,dependencies}/`
+- Step 5 → Reads `data/raw/`, creates per-repo JSON files in `data/filtered/`
+- Step 6 → Reads `data/filtered/`, creates `data/output.csv`
+
+**Resumability**: Each step checks if output files already exist and skips processing for those repos.
+
+**Processing order**: All steps process repositories in alphabetical order (by full name).
+
+**Testing with subset**: Set `MAX_REPOS=5` to process only the first 5 repos alphabetically.
+
+This allows:
+- Re-running individual steps without repeating earlier work
+- Inspecting intermediate results per repository
+- Resuming from failures or rate limit issues
+- Testing with a small subset before processing all repos
+
+## Configuration
+
+### Environment Variables (.env)
+
+- `GITHUB_TOKEN`: GitHub personal access token (required)
+- `MAX_REPOS`: Optional limit on number of repositories to process (e.g., `5` for testing). If not set, processes all repos.
+
+Example `.env`:
+```
+GITHUB_TOKEN=ghp_your_token_here
+MAX_REPOS=5
+```
+
+### Bot Filter (config/bots.json)
+
+A JSON file containing usernames of bots to exclude from activity metrics:
+
+```json
+{
+  "bots": [
+    "dependabot[bot]",
+    "renovate[bot]",
+    "github-actions[bot]",
+    "knative-prow-robot",
+    "googlebot"
+  ]
+}
+```
+
+This file can be manually edited to add/remove bot accounts. Step 5 filters out activity (commits, issues, PRs, comments, reviews) from these accounts.
+
+## GitHub API Considerations
+
+### Authentication
+
+Required: GitHub personal access token
+- Set via `GITHUB_TOKEN` environment variable in `.env` file
+- Scope needed: `public_repo` (for public data) or `repo` (for traffic data if you have push access)
+
+### Rate Limiting
+
+GitHub API limits:
+- Authenticated: 5,000 requests/hour
+- Unauthenticated: 60 requests/hour
+
+Strategies:
+- Use Octokit plugins for automatic throttling and retry
+- Each script saves progress incrementally
+- Can resume from failures without re-fetching completed data
+- Process repositories sequentially to avoid overwhelming the API
+
+### Error Handling
+
+Each script should:
+- Continue processing remaining repos if one fails
+- Log errors with repository context
+- Save partial results
+- Allow re-running to complete missing data
 
 ## Dependencies
 
-**Core:**
+**Runtime:**
 - `@octokit/rest` - GitHub API client
 - `@octokit/plugin-throttling` - Rate limit handling
 - `@octokit/plugin-retry` - Automatic retries
-- `commander` - CLI argument parsing
-- `chalk` - Colored console output
-- `cli-table3` - Terminal tables
-- `dotenv` - Environment variables
-- `winston` - Structured logging
+- `dotenv` - Environment variable loading
 
-**Dev:**
-- `typescript`, `@types/node`
-- `jest`, `ts-jest` - Testing
-- `eslint`, `prettier` - Code quality
-
-## Critical Files to Implement
-
-1. **src/types/metrics.ts** - Core data models; all modules depend on these interfaces
-2. **src/config/github.ts** - Octokit initialization with plugins; required for all API calls
-3. **src/collectors/base-collector.ts** - Base class with caching/error handling patterns
-4. **src/analyzers/health-scorer.ts** - Health score calculation logic (core business logic)
-5. **src/index.ts** - Main orchestrator coordinating collection, analysis, and reporting
+**Development:**
+- `typescript` - TypeScript compiler
+- `@types/node` - Node.js type definitions
+- `ts-node` - Run TypeScript directly
 
 ## Implementation Sequence
 
-**Phase 1: Foundation**
-1. Initialize project (package.json, tsconfig.json)
-2. Set up TypeScript configuration
-3. Define core types and interfaces
-4. Implement cache utility
-5. Configure Octokit client with plugins
+**Phase 1: Project Setup**
+1. Initialize package.json with dependencies
+2. Configure TypeScript (tsconfig.json)
+3. Create .env.example file
+4. Set up data/ directory structure
+5. Implement shared utilities (src/lib/github-client.ts, src/lib/types.ts)
 
-**Phase 2: Data Collection**
-1. Implement base collector pattern
-2. Repository collector (fetch org repos)
-3. Activity collector (commits, issues, PRs, contributors)
-4. Usage collector (stars, forks, traffic)
-5. Dependency collector (cross-references)
+**Phase 2: Step-by-Step Scripts**
+1. Implement src/1-fetch-repos.ts
+   - Initialize Octokit client
+   - Fetch repos from both organizations (2 API calls)
+   - Sort repos alphabetically by full name
+   - Save to data/repos.json
 
-**Phase 3: Analysis**
-1. Health score calculator
-2. Obsolescence detection logic
-3. Flag generation for warnings
+2. Implement src/2-fetch-activity.ts
+   - Read data/repos.json
+   - Respect MAX_REPOS env var
+   - For each repo (in alphabetical order):
+     - Check if data/raw/activity/{org}__{repo}.json exists, skip if present
+     - Make ~5-6 API calls for 2026 data:
+       - List commits (since 2026-01-01)
+       - List issues (created/updated in 2026)
+       - List pull requests (created/updated in 2026)
+       - List contributors
+       - List releases (2026)
+       - Fetch comments/reviews on issues/PRs
+     - Save raw API response to data/raw/activity/{org}__{repo}.json
 
-**Phase 4: Reporting**
-1. Console reporter with colored tables
-2. JSON reporter
-3. CSV reporter
-4. HTML reporter with dashboard
+3. Implement src/3-fetch-usage.ts
+   - Read data/repos.json
+   - Respect MAX_REPOS env var
+   - For each repo (in alphabetical order):
+     - Check if data/raw/usage/{org}__{repo}.json exists, skip if present
+     - Fetch stars, forks, watchers, traffic
+     - Save raw API response to data/raw/usage/{org}__{repo}.json
 
-**Phase 5: Integration**
-1. CLI argument parsing
-2. Main orchestrator (coordinate all components)
-3. Error handling and logging
-4. End-to-end testing
+4. Implement src/4-fetch-dependencies.ts
+   - Read data/repos.json
+   - Respect MAX_REPOS env var
+   - For each repo (in alphabetical order):
+     - Check if data/raw/dependencies/{org}__{repo}.json exists, skip if present
+     - Analyze dependencies and cross-references
+     - Save raw data to data/raw/dependencies/{org}__{repo}.json
 
-## Error Handling
+5. Implement src/5-filter-bots.ts
+   - Read config/bots.json
+   - Read data/repos.json
+   - Respect MAX_REPOS env var
+   - For each repo (in alphabetical order):
+     - Check if filtered files exist, skip if present
+     - Read raw data files
+     - Filter out bot activity from commits, issues, PRs, comments, reviews
+     - Calculate human-only metrics and latest human activity
+     - Save to data/filtered/{activity,usage,dependencies}/{org}__{repo}.json
 
-**Graceful Degradation:**
-- Continue processing other repos if one fails
-- Use cached data when API calls fail
-- Log errors with context (repo, operation, timestamp)
-- Mark partial results in reports
+6. Implement src/6-export-csv.ts
+   - Read data/repos.json
+   - Respect MAX_REPOS env var
+   - For each repo, read filtered data files
+   - Combine all data into CSV rows
+   - Export to data/output.csv
 
-**Rate Limit Management:**
-- Auto-retry with exponential backoff
-- Monitor remaining quota
-- Queue requests when limits approached
-- Save partial results periodically
+## Script Design Patterns
 
-## Testing & Verification
+**Each script should:**
+1. Load environment variables from .env (GITHUB_TOKEN, MAX_REPOS)
+2. Initialize Octokit client with throttling and retry plugins (steps 2-4)
+3. Read data/repos.json and process repos in alphabetical order
+4. Check MAX_REPOS env var and limit processing if set
+5. Check if output file exists before processing (resumability)
+6. Process data with progress logging to console (e.g., "Processing 5/100: knative/serving")
+7. Handle errors gracefully - log error, save what we have, continue with remaining repos
+8. Save results to individual JSON files per repository (not batched)
+9. Log summary at completion (total processed, skipped, errors, time taken)
 
-**Unit Tests:**
-- Mock Octokit responses
-- Test health score calculations
-- Verify obsolescence detection logic
-- Test output formatting
+**Resumability pattern:**
+```
+For each repo in repos (alphabetically):
+  outputFile = `data/raw/activity/${org}__${repo}.json`
+  if file exists:
+    log "Skipping {repo} - already processed"
+    continue
+  try:
+    data = fetchFromAPI(repo)
+    saveToFile(outputFile, data)
+    log "Completed {repo}"
+  catch error:
+    log "Error processing {repo}: {error}"
+    continue with next repo
+```
 
-**Integration Tests:**
-- Test with real GitHub API (small test org)
-- Verify caching behavior
-- Test rate limit handling
-- End-to-end workflow validation
+**Data file format:**
+- Use JSON for all intermediate data (easy to inspect and modify)
+- Use pretty-printed JSON (readable for debugging)
+- Save raw API responses without transformation (steps 2-4)
+- Use consistent filename format: `{org}__{repo}.json`
 
-**Verification Checklist:**
-- [ ] Fetches all repos from both organizations
-- [ ] Collects comprehensive metrics correctly
-- [ ] Health scores calculated accurately
-- [ ] Obsolete repos identified correctly
-- [ ] All output formats work
-- [ ] Cache reduces API calls significantly
-- [ ] Rate limits respected
-- [ ] Errors handled gracefully
-- [ ] CLI arguments work as expected
-- [ ] Reports contain accurate data
+## Verification Checklist
 
-## Performance Expectations
+After implementation, verify:
+- [ ] Step 1 fetches all repos from both organizations and sorts alphabetically
+- [ ] Step 2 saves raw activity data per repo to data/raw/activity/
+- [ ] Step 3 saves raw usage data per repo to data/raw/usage/
+- [ ] Step 4 saves raw dependency data per repo to data/raw/dependencies/
+- [ ] Step 5 filters bot activity and saves to data/filtered/
+- [ ] Step 6 exports complete CSV with all metrics
+- [ ] MAX_REPOS=5 limits processing to first 5 repos alphabetically
+- [ ] Can re-run individual steps - skips already-processed repos
+- [ ] If script is interrupted, re-running resumes from where it stopped
+- [ ] Errors on one repo don't stop processing of other repos
+- [ ] Processing happens in alphabetical order consistently
+- [ ] Raw data files contain complete API responses
+- [ ] Filtered data files have bot activity removed
+- [ ] CSV can be opened in Excel/Google Sheets
+- [ ] All dates are properly formatted
+- [ ] Rate limits are respected
 
-- ~100 repositories: 5-10 minutes (first run, no cache)
-- ~100 repositories: 1-2 minutes (with cache)
-- Rate limit usage: ~300-500 requests per full analysis
-- Process repositories in parallel (batches of 10)
-- Cache enables frequent re-analysis without hitting limits
+## Expected Performance
 
-## Authentication
+For ~100 Knative repositories (2026 data only):
+- Step 1: ~1-2 minutes (2 API calls to list repos from 2 orgs)
+- Step 2: ~8-12 minutes (5-6 API calls per repo for 2026 data)
+  - With MAX_REPOS=5: ~30-60 seconds
+- Step 3: ~3-5 minutes (1-2 API calls per repo for usage stats)
+  - With MAX_REPOS=5: ~15-30 seconds
+- Step 4: ~10-15 minutes (analyze dependencies across repos)
+  - With MAX_REPOS=5: ~30-45 seconds
+- Step 5: ~1-2 minutes (filter bot data from all raw files)
+  - With MAX_REPOS=5: ~5-10 seconds
+- Step 6: ~30 seconds (combine and export to CSV)
+  - With MAX_REPOS=5: ~5 seconds
 
-Required: GitHub personal access token with `repo` scope (for traffic data) or `public_repo` (for public data only)
+Total for full run (~100 repos): ~25-35 minutes
+Total with MAX_REPOS=5: ~2-3 minutes
 
-Configuration via:
-- `GITHUB_TOKEN` environment variable
-- `.env` file
-- `--token` CLI argument
+Rate limit usage: ~700-900 requests total for full run (well within 5,000/hour limit)
+
+**Resumability**: If a step fails or is interrupted, re-running it will skip already-processed repos and continue from where it stopped.

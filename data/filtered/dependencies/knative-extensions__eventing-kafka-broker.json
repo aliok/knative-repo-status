@@ -1,0 +1,9 @@
+{
+  "repository": "knative-extensions/eventing-kafka-broker",
+  "fetchedAt": "2026-04-06T13:45:54.352Z",
+  "dependencies": [],
+  "dependents": [],
+  "crossReferences": {
+    "mentionedIn": []
+  }
+}

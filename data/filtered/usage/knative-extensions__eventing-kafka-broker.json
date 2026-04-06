@@ -1,0 +1,44 @@
+{
+  "repository": "knative-extensions/eventing-kafka-broker",
+  "fetchedAt": "2026-04-06T21:42:32.296Z",
+  "stars": 204,
+  "forks": 143,
+  "watchers": 204,
+  "openIssues": 85,
+  "subscribers": 9,
+  "networkCount": 143,
+  "traffic": {
+    "views": {
+      "count": 1539,
+      "uniques": 892,
+      "views": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 250,
+          "uniques": 51
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 1289,
+          "uniques": 849
+        }
+      ]
+    },
+    "clones": {
+      "count": 16337,
+      "uniques": 1023,
+      "clones": [
+        {
+          "timestamp": "2026-03-23T00:00:00Z",
+          "count": 8827,
+          "uniques": 464
+        },
+        {
+          "timestamp": "2026-03-30T00:00:00Z",
+          "count": 7510,
+          "uniques": 649
+        }
+      ]
+    }
+  }
+}
