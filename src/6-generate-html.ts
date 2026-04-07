@@ -73,6 +73,24 @@ async function main() {
 
     // Calculate metrics
     const sinceDate = new Date('2025-01-01T00:00:00Z');
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+
+    // Commit metrics
+    const commitsTotal = activity?.commits?.length || 0;
+    const commits30d = activity?.commits?.filter((c: any) =>
+      new Date(c.commit?.author?.date) >= thirtyDaysAgo
+    ).length || 0;
+    const commits90d = activity?.commits?.filter((c: any) =>
+      new Date(c.commit?.author?.date) >= ninetyDaysAgo
+    ).length || 0;
+
+    // All-time / current state metrics
+    const prsOpen = activity?.pullRequests?.filter((pr: any) => pr.state === 'open').length || 0;
+    const prsMergedAllTime = activity?.pullRequests?.filter((pr: any) => pr.merged_at).length || 0;
+    const issuesOpen = activity?.issues?.filter((i: any) => i.state === 'open').length || 0;
+    const issuesClosedAllTime = activity?.issues?.filter((i: any) => i.state === 'closed').length || 0;
 
     // Issues opened in 2025-2026 (by created_at)
     const issuesOpened = activity?.issues?.filter((i: any) =>
@@ -144,8 +162,20 @@ async function main() {
         <td>${escapeHtml(repo.organization)}</td>
         <td>${usage?.stars || 0}</td>
         <td>${usage?.forks || 0}</td>
+        <td>${usage?.watchers || 0}</td>
+        <td>${usage?.openIssues || 0}</td>
+        <td>${usage?.traffic?.views?.count || 0}</td>
+        <td>${usage?.traffic?.clones?.count || 0}</td>
+        <td>${activity?.contributors?.length || 0}</td>
+        <td>${commitsTotal}</td>
+        <td>${commits30d}</td>
+        <td>${commits90d}</td>
+        <td>${issuesOpen}</td>
+        <td>${issuesClosedAllTime}</td>
         <td><a href="${issuesOpenedUrl}" target="_blank">${issuesOpened}</a></td>
         <td><a href="${issuesClosedUrl}" target="_blank">${issuesClosed}</a></td>
+        <td>${prsOpen}</td>
+        <td>${prsMergedAllTime}</td>
         <td><a href="${prsOpenedUrl}" target="_blank">${prsOpened}</a></td>
         <td><a href="${prsMergedUrl}" target="_blank">${prsMerged}</a></td>
         <td>
@@ -716,8 +746,20 @@ async function main() {
             <th>Organization</th>
             <th>⭐ Stars</th>
             <th>🔱 Forks</th>
+            <th>👁️ Watchers</th>
+            <th>📋 Open Issues<br><small>(GitHub API)</small></th>
+            <th>📊 Traffic Views</th>
+            <th>📥 Traffic Clones</th>
+            <th>👥 Contributors</th>
+            <th>📝 Commits<br><small>(2025-2026)</small></th>
+            <th>📝 Commits<br><small>(Last 30d)</small></th>
+            <th>📝 Commits<br><small>(Last 90d)</small></th>
+            <th>📋 Issues Open<br><small>(Current)</small></th>
+            <th>✅ Issues Closed<br><small>(All Time)</small></th>
             <th>📋 Issues Opened<br><small>(2025-2026, no bots)</small></th>
             <th>✅ Issues Closed<br><small>(2025-2026, no bots)</small></th>
+            <th>🔀 PRs Open<br><small>(Current)</small></th>
+            <th>✔️ PRs Merged<br><small>(All Time)</small></th>
             <th>🔀 PRs Opened<br><small>(2025-2026, no bots)</small></th>
             <th>✔️ PRs Merged<br><small>(2025-2026, no bots)</small></th>
             <th>💬 Last Commit<br><small>(Humans only)</small></th>

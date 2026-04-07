@@ -55,10 +55,14 @@ async function main() {
     'Contributors Total',
     'Latest Release Date',
     'Days Since Last Release',
-    'PRs Open (2025-2026)',
-    'PRs Merged (2025-2026)',
-    'Issues Open (2025-2026)',
+    'PRs Currently Open',
+    'PRs Merged (All Time)',
+    'Issues Currently Open',
+    'Issues Closed (All Time)',
+    'Issues Opened (2025-2026)',
     'Issues Closed (2025-2026)',
+    'PRs Opened (2025-2026)',
+    'PRs Merged (2025-2026)',
     'Latest Issue Comment Date (Human)',
     'Latest Issue Comment Author (Human)',
     'Latest PR Review Date (Human)',
@@ -106,10 +110,26 @@ async function main() {
       const latestIssueComment = activity?.latestHumanActivity?.latestIssueComment;
       const latestPRReview = activity?.latestHumanActivity?.latestPRReview;
 
+      // All-time / current state metrics
       const prsOpen = activity?.pullRequests?.filter((pr: any) => pr.state === 'open').length || 0;
-      const prsMerged = activity?.pullRequests?.filter((pr: any) => pr.merged_at).length || 0;
+      const prsMergedAllTime = activity?.pullRequests?.filter((pr: any) => pr.merged_at).length || 0;
       const issuesOpen = activity?.issues?.filter((i: any) => i.state === 'open').length || 0;
-      const issuesClosed = activity?.issues?.filter((i: any) => i.state === 'closed').length || 0;
+      const issuesClosedAllTime = activity?.issues?.filter((i: any) => i.state === 'closed').length || 0;
+
+      // 2025-2026 filtered metrics
+      const sinceDate = new Date('2025-01-01T00:00:00Z');
+      const issuesOpened2025 = activity?.issues?.filter((i: any) =>
+        new Date(i.created_at) >= sinceDate
+      ).length || 0;
+      const issuesClosed2025 = activity?.issues?.filter((i: any) =>
+        i.closed_at && new Date(i.closed_at) >= sinceDate
+      ).length || 0;
+      const prsOpened2025 = activity?.pullRequests?.filter((pr: any) =>
+        new Date(pr.created_at) >= sinceDate
+      ).length || 0;
+      const prsMerged2025 = activity?.pullRequests?.filter((pr: any) =>
+        pr.merged_at && new Date(pr.merged_at) >= sinceDate
+      ).length || 0;
 
       const latestRelease = activity?.releases?.[0];
       const daysSinceRelease = latestRelease
@@ -134,9 +154,13 @@ async function main() {
         latestRelease?.published_at || latestRelease?.created_at || '',
         daysSinceRelease !== null ? daysSinceRelease : '',
         prsOpen,
-        prsMerged,
+        prsMergedAllTime,
         issuesOpen,
-        issuesClosed,
+        issuesClosedAllTime,
+        issuesOpened2025,
+        issuesClosed2025,
+        prsOpened2025,
+        prsMerged2025,
         latestIssueComment?.date || '',
         latestIssueComment?.author || '',
         latestPRReview?.date || '',
